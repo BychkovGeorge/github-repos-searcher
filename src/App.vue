@@ -1,26 +1,46 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <main class="container mw-100 pt-5 main-container">
+    <div class="row justify-content-center">
+      <h1 class="text-center mb-5 col-12">{{ title }}</h1>
+      <form class="col-6 form-container">
+        <input type="text" class="text-center form-control m-auto" placeholder="Enter repository name"/>
+        <button @click.prevent class="btn mt-4 w-100 btn-secondary" style="background: darkcyan">Искать</button>
+      </form>
+    </div>
+  </main>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      title: 'Repos Searcher',
+    };
+  },
+
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@font-face {
+  font-family: Roboto;
+  src: url(./assets/fonts/Roboto-Regular.ttf) !important;
+}
+
+h1, p, button, input {
+  font-family: Roboto,monospace;
+  color: aliceblue;
+}
+
+.main-container {
+  height: 100vh;
+  background: linear-gradient(darkslategrey, darkcyan);
+}
+
+.form-container {
+  padding: 1.5rem;
+  border: 2px solid aliceblue;
+  border-radius: 6px;
 }
 </style>
