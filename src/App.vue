@@ -4,9 +4,15 @@
       <h1 class="text-center mb-5 col-12">{{ title }}</h1>
       <form class="col-6 form-container">
         <input v-model="inputedValue" type="text" class="text-center form-control m-auto" placeholder="Enter repository name"/>
-        <button @click.prevent="search" class="btn mt-4 w-100 btn-secondary">Искать</button>
+        <button @click.prevent="search" class="btn mt-4 w-100 btn-secondary align-items-center">
+          <div class="row justify-content-center align-items-center m-0">
+            <p class="m-0 mr-1">Search</p>
+            <b-spinner v-if="loading" variant="info" label="Spinning"></b-spinner>
+          </div>
+        </button>
+        <button v-if="isSearched" @click.prevent="clean" class="btn mt-4 w-100 btn-secondary">Clean</button>
       </form>
-      <div class="col-12 mt-5" v-if="isSearched">
+      <div class="col-12 mt-5" v-if="isSearched && searchResults.length && !loading">
         <div class="form-container mb-3 container" v-for="repo in searchResults" :key="repo.id">
           <h3 class="text-center mb-5">{{ repo.name }}</h3>
           <div class="row mb-5 justify-content-center align-items-center">
@@ -25,12 +31,20 @@
           </div>
         </div>
       </div>
+      <div class="col-12 mt-5" v-else-if="isSearched && !searchResults.length && !loading">
+        <h3 class="text-center">No results found</h3>
+      </div>
     </div>
   </main>
 </template>
 
 <script>
 import axios from 'axios'
+import Vue from 'vue'
+import { BSpinner } from 'bootstrap-vue'
+import { BImg } from 'bootstrap-vue'
+Vue.component('b-img', BImg)
+Vue.component('b-spinner', BSpinner)
 
 export default {
   data() {
@@ -38,16 +52,28 @@ export default {
       title: 'Repos Searcher',
       inputedValue: '',
       searchResults: null,
-      isSearched: false
+      isSearched: false,
+      loading: false
     };
   },
 
   methods: {
     search () {
+      this.searchResults = []
       this.isSearched = true
-      axios.get(`https://api.github.com/search/repositories?q=${this.inputedValue}`).then(res => {
+      this.loading = true
+      this.$forceUpdate()
+      axios.get(`https://api.github.com/search/repositories?q=${this.inputedValue}`)
+      .then((res) => {
         this.searchResults = res.data.items
       })
+      .finally(() => this.loading = false)
+    },
+
+    clean () {
+      this.inputedValue = ''
+      this.isSearched = false
+      this.searchResults = []
     }
   }
 
